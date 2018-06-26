@@ -1,0 +1,11 @@
+<%- include('header') -%>
+
+    <h1>Choose an Adventure</h1>
+
+    <% stories.forEach(function(story) { %>
+    <h2><%= story.title %></h2> (<%= story.language %>)<br>
+    <p><%= story.description %></p>
+    <% }); %>
+
+<%- include('footer') -%>
+
