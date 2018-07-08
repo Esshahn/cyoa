@@ -1,21 +1,69 @@
 body
 {
   padding: 10px;
+  font-size: 150%;
+  margin: 0px;
+  padding: 0px;
 }
 
 h1
 {
-  color: blue;
+  
+}
+
+h2
+{
+
 }
 
 p
 {
   margin:8px;
-  line-height: 160%;
+  line-height: 170%;
+
 }
 
 a
 {
   text-decoration: none;
   color: #668800;
+}
+
+#header
+{
+  background-color: #888888;
+  padding: 20px;
+}
+
+#header a
+{
+  color: white;
+}
+
+.story_container
+{
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #dddddd;
+}
+
+.rating
+{
+  background-color: #22dd00;
+  height: 10px;
+  margin-top: 20px;
+}
+
+.button_answer
+{
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin: 20px;
+  cursor: pointer;
+  font-family: 'Roboto';
 }

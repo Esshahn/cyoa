@@ -1,11 +1,14 @@
 <%- include('header') -%>
-    <% stories.forEach(function(story) { %>
+
+
+
+    <%= story.story_id %>
     <div class="story_container">
       <h2><%= story.title %></h2>
       <p><%= story.description %></p>
-      <a href="/story/<%= story.id %>/0" class="button_answer">Start <%= story.title %></a>
     </div>
-    <% }); %>
+    <a href="/story/<%= story.id %>/<%= story.first_room %>" class="button_answer">Start <%= story.title %></a>
+ 
 
 <%- include('footer') -%>
 

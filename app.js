@@ -16,12 +16,17 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 // Routing
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/stories', function (req, res) {
+app.get('/stories', (req, res) => {
   database.show_stories(res);
+});
+
+
+app.get('/story/:story_id/:room_id', (req, res) =>{
+  database.show_story(req,res);
 });
 
 // Listen to port 3000
