@@ -6,27 +6,44 @@
 
 
 const express     = require ("express");
-//const bodyParser  = require ("body-parser");
-//const path        = require ("path");
+const path        = require ("path");
+const bodyParser = require ("body-parser");
+const database    = require('./database');
+const app         = express();
 
-const database = require('./database');
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-const app = express();
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, '/public')));
+
+app.use('/stylesheet.css', function(req, res){
+    res.sendFile(path.resolve(__dirname, './css/stylesheet.css')); // put your app.css's relative path
+})
 
 // Routing
 app.get('/', (req, res) => {
-  res.render('index');
+  database.index(res);
 });
 
 app.get('/stories', (req, res) => {
-  database.show_stories(res);
+  database.stories(res);
 });
 
+app.get('/story/:story_id', (req, res) =>{
+  database.story(req,res);
+});
 
 app.get('/story/:story_id/:room_id', (req, res) =>{
-  database.show_story(req,res);
+  database.room(req,res);
+});
+
+app.get('/story/:story_id/:room_id/:answer_id/new', (req, res) =>{
+  database.room_create(req,res);
+});
+
+app.post('/insertroom',urlencodedParser, (req, res) =>{
+  database.room_insert(req,res);
 });
 
 // Listen to port 3000

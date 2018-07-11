@@ -1,6 +1,12 @@
 <%- include('header') -%>
 
-<h1>Choose Your Own Adventure</h1>
-<a href="/stories" class="button_answer">Show all adventures</a>
+<div class="story_container">
+  <h1>Choose Your Own Adventure</h1>
+  <p>An adventure creation system by Ingo Hinterding, 2018
+  <br>
+  Currently <%= rooms.rooms %> rooms in <%= stories.stories %> adventures. 
+  </p>
+  <a href="/stories" class="button_answer">Show all adventures</a>
+</div>
 
 <%- include('footer') -%>

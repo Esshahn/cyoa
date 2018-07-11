@@ -1,7 +1,7 @@
 body
 {
   padding: 10px;
-  font-size: 150%;
+  font-size: 120%;
   margin: 0px;
   padding: 0px;
 }
@@ -21,6 +21,11 @@ p
   margin:8px;
   line-height: 170%;
 
+}
+
+textarea
+{
+  font-size: 150%;
 }
 
 a
@@ -43,8 +48,15 @@ a
 .story_container
 {
   padding: 20px;
-  margin: 20px;
-  border: 1px solid #dddddd;
+  margin: 2%;
+
+}
+
+.story_header_container
+{
+  color: white;
+  padding: 20px;
+  background-color: #4CAFf0;
 }
 
 .rating
@@ -63,7 +75,28 @@ a
   text-align: center;
   text-decoration: none;
   display: block;
+  margin: 0px 10% 10px 10%;
+  cursor: pointer;
+  font-family: 'Roboto';
+}
+
+.button_answer:hover
+{
+  background-color: #ddaa22;
+
+}
+
+.input_answer
+{
+  background-color: #4CAFf0;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  display: block;
   margin: 20px;
   cursor: pointer;
   font-family: 'Roboto';
+  font-size: 120%;
+
 }
