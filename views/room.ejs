@@ -1,0 +1,21 @@
+<%- include('header') -%>
+    
+    <div class="story_container">
+      <p><%- room.description %></p>
+    </div>
+
+    <div class="answer_container">
+      <% answers.forEach(function(answer) { %>
+      <% if (answer.next_room != 0){ %>
+      <!-- show normal answer link to next room -->
+      <a href="/story/<%= room.story_id %>/<%= answer.next_room %>" class="button_answer"><%= answer.answer %></a>
+      <% }else { %> 
+      <!-- show link to create new room -->
+      <a href="/story/<%= room.story_id %>/<%= room.id %>/<%= answer.id %>/new" class="button_answer"><%= answer.answer %></a>
+      <% }}); %>
+    </div>
+
+    <a href="/story/<%= room.story_id %>/<%= room.id %>/0/edit" class="button_answer">edit</a>
+
+<%- include('footer') -%>
+

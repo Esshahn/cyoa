@@ -1,0 +1,16 @@
+<%- include('header') -%>
+
+<div class="story_container">
+  <form id="create_room" method="POST" action="/updateroom">
+    <input type="hidden" name="room_id" value="<%- room.id %>">
+    <textarea placeholder="Enter your description" rows="10" cols="40" name="description"><%- room.description %></textarea>
+    <br>
+    <% answers.forEach(function(answer) { %>
+    <input placeholder="Enter answer <%= answer.position %>" class="input_answer" type="text" name="answer_<%= answer.id %>" value="<%= answer.answer %>">
+    <% }); %>
+    <br>
+    <input class="button_answer" type="submit" value="Submit">
+  </form>
+</div>
+
+<%- include('footer') -%>

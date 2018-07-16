@@ -8,7 +8,7 @@ body
 
 h1
 {
-  
+  font-size: 120%;
 }
 
 h2
@@ -18,14 +18,13 @@ h2
 
 p
 {
-  margin:8px;
-  line-height: 170%;
-
+  line-height: 160%;
 }
 
 textarea
 {
-  font-size: 150%;
+  font-size: 130%;
+  width: 100%;
 }
 
 a
@@ -36,8 +35,25 @@ a
 
 #header
 {
+  color: white;
+  background-color: #4CAFf0;
+  width: 100%;
+  height: 40px;
+
+}
+
+#header_left
+{
+  padding: 10px;
+  height: 40px;
+  float:left;
   background-color: #888888;
-  padding: 20px;
+}
+
+#header_right
+{
+  padding: 10px;
+  float: left;
 }
 
 #header a
@@ -49,13 +65,18 @@ a
 {
   padding: 20px;
   margin: 2%;
+}
 
+.clear
+{
+  clear: both;
 }
 
 .story_header_container
 {
+  margin-top: 2px;
   color: white;
-  padding: 20px;
+  padding: 10px;
   background-color: #4CAFf0;
 }
 
@@ -71,19 +92,26 @@ a
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: block;
-  margin: 0px 10% 10px 10%;
+  margin-bottom: 10px;
   cursor: pointer;
   font-family: 'Roboto';
+  font-size: 90%;
+}
+
+.answer_container
+{
+  margin-top: 10%;
+  width: auto;
+  left: 50;
 }
 
 .button_answer:hover
 {
   background-color: #ddaa22;
-
 }
 
 .input_answer
@@ -98,5 +126,6 @@ a
   cursor: pointer;
   font-family: 'Roboto';
   font-size: 120%;
-
+  width: auto;
+  left: 50%;
 }

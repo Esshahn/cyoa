@@ -1,21 +1,15 @@
 <%- include('header') -%>
 
-    <div class="story_header_container">
-      Room: <%= room.depth %> | <b><%= title.title %></b>
-    </div>
-
-    
+    <%= story.story_id %>
     <div class="story_container">
-      <p><%- room.description %></p>
+      <h2><%= story.title %></h2>
+      <p><%- story.description %></p>
+      <p>Language: <%= story.language %><br>
+        Rating: <%= story.rating %><br>
+        Genre: <%= story.genre %><br>
+      </p>
     </div>
-
-    <% answers.forEach(function(answer) { %>
-    
-    <% if (answer.next_room != 0){ %>
-    <a href="/story/<%= room.story_id %>/<%= answer.next_room %>" class="button_answer"><%= answer.answer %></a>
-    <% }else { %> 
-    <a href="/story/<%= room.story_id %>/<%= room.id %>/<%= answer.id %>/new" class="button_answer"><%= answer.answer %></a>
-    <% }}); %>
+    <a href="/story/<%= story.id %>/<%= story.first_room %>" class="button_answer">Start <%= story.title %></a>
 
 <%- include('footer') -%>
 

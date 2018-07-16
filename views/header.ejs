@@ -3,11 +3,17 @@
   <head>
     <title>Choose Your Own Adventure</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/stylesheet.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   </head>
   <body>
     <div id="header">
-      <a href="/">home</a>
+      <div id="header_left">
+        <a href="/">home</a>
+      </div>
+      <div id="header_right">
+        <%= system.title %>
+      </div>
     </div>

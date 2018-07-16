@@ -15,6 +15,8 @@ const db = mysql.createConnection({
   database : 'cyoa'
 });
 
+var system = {};
+
 // establish connection
 db.connect( (err) => {
     if (err) throw err;
@@ -23,13 +25,16 @@ db.connect( (err) => {
 
 
 // displays the index website with some general information
-exports.index = function(res)
+exports.index = (res) =>
 {
-  db.query('SELECT COUNT(id) AS stories from story', function (error, stories, fields)
+  db.query('SELECT COUNT(id) AS stories from stories', function (error, result)
   {
-    db.query('SELECT COUNT(id) AS rooms from room', function (error, rooms, fields)
+    let stories = result[0];
+    db.query('SELECT COUNT(id) AS rooms from rooms', function (error, result)
     {
-      res.render('index',{stories:stories[0],rooms:rooms[0]});
+      let rooms = result[0];
+      system.title = "Choose Your Own Adventure!";
+      res.render('index',{system:system,stories:stories,rooms:rooms});
 
       console.log(" ");
       console.log("-----------------------------------");
@@ -43,75 +48,144 @@ exports.index = function(res)
 
 
 // shows an overview with all stories in the DB
-exports.stories = function(res)
+exports.stories = (res) =>
 {
-  db.query('SELECT * from story ORDER by rating DESC', function (error, results, fields)
+  db.query('SELECT * from stories ORDER by rating DESC', function (error, result)
   {
     if (error) throw error;
-    res.render('stories',{stories:results});
+    system.title = "All adventures";
+    res.render('stories',{system:system,stories:result});
   });  
 }
 
 
 // display the summary of a story
-exports.story = function(req,res)
+exports.story = (req,res) =>
 {
-  db.query('SELECT * from story WHERE id='+req.params.story_id, function (error, results, fields)
+  let sql = `
+    SELECT stories.*, languages.language, genres.genre from stories 
+    JOIN languages ON languages.id = stories.language_id
+    JOIN genres ON genres.id = stories.genre_id
+    WHERE stories.id=${req.params.story_id}
+  `;
+
+  db.query(sql, function (error, result)
     {
-      res.render('story_summary',{story:results[0]});
+      system.title = "Adventure Summary";
+      res.render('story',{system:system,story:result[0]});
     }); 
 }
 
 
-
 // display a room
-exports.room = function(req,res)
+exports.room = (req,res) =>
 {
-  db.query('SELECT * from room WHERE id='+req.params.room_id, function (error, results, fields)
-  {
-    db.query('SELECT * from answer WHERE room_id='+req.params.room_id, function (error, results_2, fields)
-    {
-      db.query('SELECT title from story WHERE id='+req.params.story_id, function (error, title, fields)
-      {
-        res.render('story',{room:results[0],answers:results_2,title:title[0]});
 
-      });
+  let sql = `
+  SELECT rooms.*, stories.title
+  FROM rooms JOIN stories 
+  ON rooms.story_id = stories.id
+  WHERE rooms.id=${req.params.room_id}`;
+
+  db.query(sql, function (error, result)
+  {
+    let room = result[0];
+    db.query(`SELECT * from answers WHERE room_id=${req.params.room_id}`, function (error, result)
+    {
+      let answer = result;
+      system.title = "Room "+room.depth+ " | "+room.title;
+      res.render('room',{system:system,room:room,answers:answer});
     });     
   }); 
 }
 
 
-exports.room_create = function(req,res)
+exports.room_create = (req,res) =>
+{
+  db.query('SELECT depth from rooms WHERE id='+req.params.room_id, function (error, result)
+    {
+      req.params.depth = result[0].depth +1;
+      system.title = "Now it's your turn!";
+      res.render('room_create',{system:system,data:req.params});
+    });
+}
+
+
+exports.room_edit = (req,res) =>
 {
 
-  db.query('SELECT depth from room WHERE id='+req.params.room_id, function (error, depth, fields)
+  let sql = `
+  SELECT rooms.*, stories.title
+  FROM rooms JOIN stories 
+  ON rooms.story_id = stories.id
+  WHERE rooms.id=${req.params.room_id}`;
+
+  db.query(sql, function (error, result)
+  {
+    let room = result[0];
+    db.query(`SELECT * from answers WHERE room_id=${req.params.room_id}`, function (error, result)
     {
-      req.params.depth = depth[0].depth +1;
-      res.render('room_create',{data:req.params});
-    });
+      let answer = result;
+      system.title = "Edit room";
+      res.render('room_edit',{system:system,room:room,answers:answer});
+    });     
+  }); 
 
 }
 
 
-exports.room_insert = function (req,res)
+exports.room_update = (req,res) =>
 {
   console.log(req.body);
 
-  var sql = "INSERT INTO room (story_id, description, depth) VALUES ('"+req.body.story_id+"','"+req.body.description+"','"+req.body.depth+"')";
-  db.query(sql, function (error, result, fields)
+  let id, sql, answer;
+
+  for (const key of Object.keys(req.body)) 
+  {
+    if (key.startsWith("answer_"))
+    {
+      id = key.replace("answer_","");
+      answer = mysql_real_escape_string(req.body[key]);
+      sql = `UPDATE answers SET answer = '${answer}' WHERE id = ${id}`;
+      db.query(sql, function (error, result)
+      {
+        
+      });
+
+    }
+  }
+
+  let description = mysql_real_escape_string(req.body.description);
+
+  sql = `UPDATE rooms SET description = '${description}' WHERE id = ${req.body.room_id}`;
+  console.log("\n\x1b[33m" + sql + "\x1b[0m");
+  db.query(sql, function (error, result)
+  {
+    res.redirect('/story/'+req.body.story_id+'/'+req.body.room_id);
+  });
+
+
+}
+
+
+exports.room_insert = (req,res) =>
+{
+
+  var sql = "INSERT INTO rooms (story_id, description, depth) VALUES ('"+req.body.story_id+"','"+mysql_real_escape_string(req.body.description)+"','"+req.body.depth+"')";
+  db.query(sql, function (error, result)
     { 
       var sql = "SELECT LAST_INSERT_ID();";
-      db.query(sql, function (error, result, fields)
+      db.query(sql, function (error, result)
       {
         var new_room_id = result[0]['LAST_INSERT_ID()'];
-        var sql = "UPDATE answer SET next_room = "+new_room_id+" WHERE id = "+req.body.answer_id;
-        db.query(sql, function (error, result, fields)
+        var sql = "UPDATE answers SET next_room = "+new_room_id+" WHERE id = "+req.body.answer_id;
+        db.query(sql, function (error, result)
           {
-            var sql = "INSERT INTO answer (story_id, room_id, answer, position) VALUES ('"+req.body.story_id+"','"+new_room_id+"','"+req.body.answer1+"',1)";
-            db.query(sql, function (error, result, fields)
+            var sql = "INSERT INTO answers (story_id, room_id, answer, position) VALUES ('"+req.body.story_id+"','"+new_room_id+"','"+mysql_real_escape_string(req.body.answer1)+"',1)";
+            db.query(sql, function (error, result)
               {
-               var sql = "INSERT INTO answer (story_id, room_id, answer, position) VALUES ('"+req.body.story_id+"','"+new_room_id+"','"+req.body.answer2+"',2)";
-                db.query(sql, function (error, result, fields)
+               var sql = "INSERT INTO answers (story_id, room_id, answer, position) VALUES ('"+req.body.story_id+"','"+new_room_id+"','"+mysql_real_escape_string(req.body.answer2)+"',2)";
+                db.query(sql, function (error, result)
                 {
                   res.redirect('/story/'+req.body.story_id+'/'+new_room_id);
                 });
@@ -122,5 +196,30 @@ exports.room_insert = function (req,res)
 }
 
 
+
+function mysql_real_escape_string (str) {
+    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+        switch (char) {
+            case "\0":
+                return "\\0";
+            case "\x08":
+                return "\\b";
+            case "\x09":
+                return "\\t";
+            case "\x1a":
+                return "\\z";
+            case "\n":
+                return "\\n";
+            case "\r":
+                return "\\r";
+            case "\"":
+            case "'":
+            case "\\":
+            case "%":
+                return "\\"+char; // prepends a backslash to backslash, percent,
+                                  // and double/single quotes
+        }
+    });
+}
 
     

@@ -22,29 +22,15 @@ app.use('/stylesheet.css', function(req, res){
 })
 
 // Routing
-app.get('/', (req, res) => {
-  database.index(res);
-});
+app.get('/', (req, res) => { database.index(res); });
+app.get('/stories', (req, res) => { database.stories(res); });
+app.get('/story/:story_id', (req, res) => { database.story(req,res); });
+app.get('/story/:story_id/:room_id', (req, res) => { database.room(req,res); });
+app.get('/story/:story_id/:room_id/0/edit', (req, res) => { database.room_edit(req,res); });
+app.get('/story/:story_id/:room_id/:answer_id/new', (req, res) => { database.room_create(req,res); });
 
-app.get('/stories', (req, res) => {
-  database.stories(res);
-});
-
-app.get('/story/:story_id', (req, res) =>{
-  database.story(req,res);
-});
-
-app.get('/story/:story_id/:room_id', (req, res) =>{
-  database.room(req,res);
-});
-
-app.get('/story/:story_id/:room_id/:answer_id/new', (req, res) =>{
-  database.room_create(req,res);
-});
-
-app.post('/insertroom',urlencodedParser, (req, res) =>{
-  database.room_insert(req,res);
-});
+app.post('/insertroom',urlencodedParser, (req, res) => { database.room_insert(req,res); });
+app.post('/updateroom',urlencodedParser, (req, res) => { database.room_update(req,res); });
 
 // Listen to port 3000
 app.listen(3000, () => {
