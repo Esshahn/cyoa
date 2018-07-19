@@ -1,11 +1,32 @@
 <%- include('header') -%>
-    <% stories.forEach(function(story) { %>
-    <div class="story_container">
-      <h2><%= story.title %></h2>
-      <p><%= story.description %></p>
-      <a href="/story/<%= story.id %>" class="button_answer">Start <%= story.title %></a>
-    </div>
-    <% }); %>
+    
+    <div id="container">
 
+      <table border="0" cellpadding="4">
+        <tr>
+          
+          <th>Rooms</th>
+          <th>Language</th>
+          <th>Genre</th>
+          <th>Rating</th>
+        </tr>
+
+        <% stories.forEach(function(story) { %>
+        <tr>
+          <td colspan="4"><a href="/story/<%= story.id %>/<%= story.first_room %>"><%= story.title %></a></td>
+        </tr>
+        
+        <tr>
+          
+          <td><%= story.rooms %></td>
+          <td><%= story.language %></td>
+          <td><%= story.genre %></td>
+          <td><%= story.rating %></td>
+          
+        </tr>
+        <% }); %>
+      </table>
+    </div>
+    
 <%- include('footer') -%>
 

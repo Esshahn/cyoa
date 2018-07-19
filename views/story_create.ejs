@@ -1,17 +1,37 @@
 <%- include('header') -%>
 
-<div class="story_container">
-  <form id="create_room" method="POST" action="/insertroom">
-    <input type="hidden" name="story_id" value="<%- data.story_id %>">
-    <input type="hidden" name="room_id" value="<%- data.room_id %>">
-    <input type="hidden" name="depth" value="<%- data.depth %>">
-    <input type="hidden" name="answer_id" value="<%- data.answer_id %>">
-    <textarea placeholder="Enter your description" rows="10" cols="40" name="description"></textarea>
-    <br>
-    <input placeholder="Enter first answer" class="input_answer" type="text" name="answer1" value="">
-    <input placeholder="Enter second answer" class="input_answer" type="text" name="answer2" value="">
-    <br>
-    <input class="button_answer" type="submit" value="Submit">
+<div id="container">
+  <form id="create_room" method="POST" action="/insertstory">
+    <input placeholder="Enter the title of the adventure" class="" type="text" name="title" value="">
+
+    <fieldset>
+        <legend>Select the language</legend>
+
+        <select id="language" name="language">
+            <% languages.forEach(function(language) { %>
+                <option value="<%= language.id %>"><%= language.language %></option>
+            <% }); %>
+        </select>
+ 
+        <legend>Select the genre</legend>
+
+        <select id="genre" name="genre">
+            <% genres.forEach(function(genre) { %>
+                <option value="<%= genre.id %>"><%= genre.genre %></option>
+            <% }); %>
+        </select>
+    </fieldset>
+    
+    <br/>
+    <fieldset>
+    <legend>Select availability of the adventure</legend>
+        <input type="radio" id="private" name="access" value="0" checked />
+        <label for="public">Keep my adventure private for now (only I can read and edit)</label>
+        <br/>
+        <input type="radio" id="public" name="access"  value="1" />
+        <label for="private">Make the adventure public (everybody can read and edit)</label>
+    </fieldset>
+    <input class="button_answer" type="submit" value="Continue">
   </form>
 </div>
 

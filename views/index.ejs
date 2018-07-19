@@ -1,13 +1,13 @@
 <%- include('header') -%>
 
-<div class="story_container">
+<div id="container">
   <h1>Choose Your Own Adventure</h1>
   <p>An adventure creation system by Ingo Hinterding, 2018
   <br>
   Currently <%= rooms.rooms %> rooms in <%= stories.stories %> adventures. 
   </p>
-  <a href="/story/1/1" class="button_answer">Mission Farpoint</a>
-  <a href="/stories" class="button_answer">Show all adventures</a>
+  <a href="/stories" >Show all adventures</a><br>
+  <a href="/story_create" >Create a new adventure</a>
 </div>
 
 <%- include('footer') -%>

@@ -50,12 +50,24 @@ exports.index = (res) =>
 // shows an overview with all stories in the DB
 exports.stories = (res) =>
 {
-  db.query('SELECT * from stories ORDER by rating DESC', function (error, result)
+
+  let sql = `
+    SELECT DISTINCT stories.*, languages.language, genres.genre,
+    (SELECT COUNT(*) FROM rooms WHERE rooms.story_id = stories.id) AS rooms 
+    FROM stories
+    JOIN languages ON languages.id = stories.language_id
+    JOIN genres ON genres.id = stories.genre_id
+    JOIN rooms on stories.id = rooms.story_id 
+    ORDER BY rooms DESC
+  `;
+
+
+  db.query(sql, function (error, result)
   {
     if (error) throw error;
     system.title = "All adventures";
     res.render('stories',{system:system,stories:result});
-  });  
+  });
 }
 
 
@@ -71,9 +83,77 @@ exports.story = (req,res) =>
 
   db.query(sql, function (error, result)
     {
+
+      let story = result[0];
+      // get the lowest room ID for a given story (must be the first room then)
+      
       system.title = "Adventure Summary";
-      res.render('story',{system:system,story:result[0]});
+      res.render('story',{system:system,story:story});
     }); 
+}
+
+
+exports.story_create = (req,res) =>
+{
+  let sql = `
+  SELECT *
+  FROM languages`;
+
+  db.query(sql, function (error, result)
+  {
+
+    let languages = result;
+    let sql = `
+    SELECT *
+    FROM genres`;
+
+     db.query(sql, function (error, result)
+     {
+      let genres = result;
+      system.title = "Create a new adventure";
+      res.render('story_create',{system:system,genres:genres,languages:languages});
+    });
+  });    
+}
+
+exports.story_insert = (req,res) =>
+{
+
+  let sql = `
+  INSERT INTO stories (title, language_id,genre_id,access)
+  VALUES ('${mysql_real_escape_string(req.body.title)}',${req.body.language},${req.body.genre},${req.body.access})`;
+
+  db.query(sql, function (error, result)
+    {
+      sql = "SELECT LAST_INSERT_ID();";
+      db.query(sql, function (error, result)
+      {
+        let story_id = result[0]['LAST_INSERT_ID()'];
+        sql = `INSERT INTO rooms (story_id, depth) VALUES (${story_id},1)`;
+        db.query(sql, function (error, result)
+        {
+          sql = "SELECT LAST_INSERT_ID();";
+          db.query(sql, function (error, result)
+          {
+            let room_id = result[0]['LAST_INSERT_ID()'];
+            sql = `INSERT INTO answers (story_id, room_id, position) VALUES (${story_id},${room_id},1)`;
+            db.query(sql, function (error, result)
+            {
+              sql = `INSERT INTO answers (story_id, room_id, position) VALUES (${story_id},${room_id},2)`;
+              db.query(sql, function (error, result)
+              {
+                sql = `UPDATE stories SET first_room = ${room_id} WHERE id = ${story_id}`;
+                console.log(sql);
+                db.query(sql, function (error, result)
+                {
+                  res.redirect('story/'+story_id+'/'+room_id+'/0/edit');
+                });
+              });
+            });
+          });
+        });
+      });
+    });  
 }
 
 
@@ -90,6 +170,8 @@ exports.room = (req,res) =>
   db.query(sql, function (error, result)
   {
     let room = result[0];
+    room.description = room.description.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br> for html output
+    console.log(room.description);
     db.query(`SELECT * from answers WHERE room_id=${req.params.room_id}`, function (error, result)
     {
       let answer = result;
