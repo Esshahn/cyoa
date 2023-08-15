@@ -10,7 +10,7 @@
   "author": "Ingo Hinterding",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.2",
     "ejs": "*",
     "express": "*",
     "mysql": "*"
